@@ -48,7 +48,7 @@ pipeline {
               
                
                // sh '/Applications/Docker.app/Contents/Resources/bin/docker build -t rajuyathi/calculator:latest .' 
-               sh 'docker build -t  -f rajuyathi/petclinic-spinnaker-jenkins:latest .' 
+               sh 'docker build -t  rajuyathi/petclinic-spinnaker-jenkins:latest .' 
                 
                
           }
