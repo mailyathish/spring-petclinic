@@ -14,7 +14,16 @@ pipeline {
              
           }
         }
-    }
+   
 
-}
+
+    stage('Build Application') { 
+        steps {
+            echo '=== Building Petclinic Application ==='
+            sh 'mvn -B -DskipTests clean package' 
+            }
+        }
+
+    }
+ }
 
