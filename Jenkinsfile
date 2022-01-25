@@ -36,6 +36,13 @@ pipeline {
             }
         }
 
+ stage('Performance Test') {
+      steps {
+         sh 'mvn verify'
+      
+   }
+ }
+
     }
  }
 
