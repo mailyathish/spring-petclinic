@@ -91,9 +91,9 @@
 
     stage("Clean up Jenkins Dockers"){
     steps{
-        sh 'docker ps -a | egrep "Exited|Created" | awk \'{print $1}\' | grep -v CONTAINER | xargs docker rm'
-        sh 'docker images | egrep \'weeks|months\' | grep \'<none>\' | awk \'{ print $3 }\' | xargs docker rmi -f'
-        sh 'docker images | egrep \'weeks|months\' | grep \'<none>\' | awk \'{ print $3 }\' | xargs docker rmi -f'
+        sh 'docker stop $(docker ps -a -q)'
+        sh 'docker rm $(docker ps -a -q)'
+       
 
     }
 
