@@ -88,17 +88,6 @@
 
         }
         }
-
-    stage("Clean up Jenkins Dockers"){
-    steps{
-         sh "docker stop ${docker ps -a -q}"
-       
-       
-
-    }
-
-
-        }
     }
     }
 
