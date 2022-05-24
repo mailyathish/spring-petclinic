@@ -18,7 +18,7 @@
         stage('checkout') {
             steps {
                     git credentialsId: 'gitpwd', url: 'https://github.com/mailyathish/spring-petclinic.git'
-                    //git branch: 'master', url: 'https://github.com/mailyathish/spring-petclinic.git'
+                   
                 
             }
             }
