@@ -1,13 +1,14 @@
-    pipeline {
+  pipeline {
         agent any
+        
+         environment {
+         DOCKER_RUN  = 'docker run -p 8080:8080 -d --name my-app rajuyathi/petclinic:latest' 
+         
+         }
         
         tools
         {
-        maven "Maven"
-        }
-
-        environment {
-        DOCKER_RUN  = 'docker run -p 8080:8080 -d --name my-app rajuyathi/petclinic-spinnaker-jenkins:latest' 
+        maven "maven"
         }
 
         stages {
@@ -16,22 +17,22 @@
             //  GIT checkout
         stage('checkout') {
             steps {
-                
-                    git branch: 'master', url: 'https://github.com/mailyathish/spring-petclinic.git'
+                    git credentialsId: 'gitpwd', url: 'https://github.com/mailyathish/spring-petclinic.git'
+                    //git branch: 'master', url: 'https://github.com/mailyathish/spring-petclinic.git'
                 
             }
             }
-    
-
-        //   Maven build 
+            
+            
+         //   Maven build 
         stage('Build Application') { 
             steps {
                 echo '=== Building Petclinic Application ==='
                 sh 'mvn -B -DskipTests clean package' 
                 }
             }
-
-        // Maven Junit - Test
+            
+                  // Maven Junit - Test
         stage('Test Application') {
                 steps {
                     echo '=== Testing Petclinic Application ==='
@@ -57,37 +58,36 @@
                 
                 
 
-                sh 'docker build -t  rajuyathi/petclinic-spinnaker-jenkins:latest .' 
+                sh 'docker build -t  rajuyathi/petclinic:latest .' 
                     
                 
             }
-            }
-
-    //  Pushing the Docker image to Docker Hub 
+        }
+        
+            //  Pushing the Docker image to Docker Hub 
         stage('Push Docker Image'){
         steps {
         
-        withCredentials([string(credentialsId: 'DockerPWDS', variable: 'DockerPass')]) {
+        withCredentials([string(credentialsId: 'DockerPWD', variable: 'DockerPass')]) {
             // some block
 
         
         sh 'docker login -u rajuyathi -p ${DockerPass}'
-        sh 'docker push rajuyathi/petclinic-spinnaker-jenkins:latest'
+        sh 'docker push rajuyathi/petclinic:latest'
         }
     }
     }
-
-    // Running the Container on Remote AWS - Instance.
+        // Running the Container on Remote AWS - Instance.
     stage('Run Container on Dev Server'){
         steps {
-            sshagent(['AWSLogin']) {
+            sshagent(credentials: ['AWSLogin1'], ignoreMissing: true){
                 // sh 'docker run -p 9090:9090 -d --name my-app rajuyathi/petclinic-spinnaker-jenkins'
-                sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.35.179 docker rm -f my-app || true"
-                sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.35.179 ${DOCKER_RUN}"
+                   sh "ssh -o StrictHostKeyChecking=no -l ubuntu  54.197.169.41 docker rm -f my-app || true"
+                   sh "ssh -o StrictHostKeyChecking=no -l ubuntu  54.197.169.41 ${DOCKER_RUN}"
             }
 
         }
         }
     }
-    }
-
+        
+}
